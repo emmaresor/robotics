@@ -1,3 +1,60 @@
+#New format?
+Professors:
+- name: Laney Strange
+  x: 15.1834
+  y: 14.4788
+  z: 0.0
+- name: Sinapov Lab
+  x: 15.1834
+  y: 14.4788
+  z: 0.0
+- name: Sara Admin
+  x: 15.1834
+  y: 14.4788
+  z: 0.0
+- name: Peter Vondras
+  x: 15.1834
+  y: 14.4788
+  z: 0.0
+- name: Brian LaChance
+  x: 15.1834
+  y: 14.4788
+  z: 0.0
+- name: Sam Lasser
+  x: 15.1834
+  y: 14.4788
+  z: 0.0
+- name: Jeanne-Marie Musca
+  x: 15.1834
+  y: 14.4788
+  z: 0.0
+- name: Neda Hassanpout
+  x: 15.1834
+  y: 14.4788
+  z: 0.0
+- name: Karl Cronburg
+  x: 15.1834
+  y: 14.4788
+  z: 0.0
+- name: Hu (Moses) Huang
+  x: 15.1834
+  y: 14.4788
+  z: 0.0
+
+Rooms:
+- room: 226
+  x: 15.1834
+  y: 14.4788
+  z: 0.0
+- room: 228A
+  x: 15.1834
+  y: 14.4788
+  z: 0.0
+- room: 228C
+  x: 15.1834
+  y: 14.4788
+  z: 0.0
+
 #Laney, Jivko, Graduate Office
 - name: Laney Strange
 point: [15.1834, 14.4788, 0.0]
