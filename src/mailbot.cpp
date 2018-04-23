@@ -6,15 +6,13 @@
 #include "geometry_msgs/Pose.h"
 #include "geometry_msgs/PoseArray.h"
 
-#include<yaml-cpp/yaml.h>
+#include <yaml-cpp/yaml.h>
 #include <sound_play/sound_play.h>
 #include <sound_play/SoundRequest.h>
 
-#include<iostream>
+#include <iostream>
 
 using namespace std;
-
-
 
 int main(int argc, char** argv)
 {
@@ -24,8 +22,8 @@ int main(int argc, char** argv)
   
   ros::Publisher sound_pub;
   sound_play::SoundRequest S;
-	S.sound = -3; // =SAY
-	S.command = 1; // =PLAY_ONCE
+  S.sound = -3; // =SAY
+  S.command = 1; // =PLAY_ONCE
   string messages[8] = {"Hi Megan! Are you delivering to a room or a professor?", "Oops! Incorrect input. Try again!",
                         "Please enter the room number.", "Please enter the professor's last name.", 
                         "I don't know where to go for the location you specified.", "Okay, I know where to go!",
@@ -35,22 +33,26 @@ int main(int argc, char** argv)
   ********************************************************************************************/
   
   YAML::Node config = YAML::LoadFile(argv[1]);
-  YAML::Node& profs = confg["Professors"];
-  YAML::Node& rooms = confg["Rooms"];
+  const YAML::Node& profs = config["Professors"];
+  const YAML::Node& rooms = config["Rooms"];
+  const YAML::Node& office = config["Office"];
+  double officex = office[0].as<double>();
+  double officey = office[1].as<double>();
+  double officez = office[2].as<double>();
   
   /********************************************************************************************
               Prompt user to indicate room or professor, determine which YAML node to use
   ********************************************************************************************/
  
-	S.arg = messages[1];
-	sound_pub.publish(S);
+  S.arg = messages[1];
+  sound_pub.publish(S);
   
   char location_type;
   cout << "Type R for room and P for professor: ";
   cin >> location_type;
   while (location_type != 'R' && location_type != 'P') {
     S.arg = messages[2];
-	  sound_pub.publish(S);
+    sound_pub.publish(S);
     cout << "Type R for room and P for professor: ";
     cin >> location_type;
   }
@@ -58,12 +60,12 @@ int main(int argc, char** argv)
   string location;
   if (location_type == 'R') {
     S.arg = messages[3];
-	  sound_pub.publish(S);
+    sound_pub.publish(S);
     cout << "Room #: ";
     cin >> location;
   } else {
     S.arg = messages[4];
-	  sound_pub.publish(S);
+    sound_pub.publish(S);
     cout << "Professor's last name: ";
     cin >> location;
   }
@@ -78,9 +80,9 @@ int main(int argc, char** argv)
     for (size_t i = 0; i < rooms.size(); i++) {
     const YAML::Node& destination = rooms[i];
       if (destination["room"].as<string>() == location) {
-        xpos = destination["x"];
-        ypos = destination["y"];
-        zpos = destination["z"];
+        xpos = destination["x"].as<double>();
+        ypos = destination["y"].as<double>();
+        zpos = destination["z"].as<double>();
         break;
       }
     }
@@ -88,9 +90,9 @@ int main(int argc, char** argv)
     for (size_t i = 0; i < profs.size(); i++) {
     const YAML::Node& destination = profs[i];
       if (destination["name"].as<string>() == location) {
-        xpos = destination["x"];
-        ypos = destination["y"];
-        zpos = destination["z"];
+        xpos = destination["x"].as<double>();
+        ypos = destination["y"].as<double>();
+        zpos = destination["z"].as<double>();
         break;
       }
     }
@@ -98,11 +100,12 @@ int main(int argc, char** argv)
   // Check if name not found
   if (xpos == -1.0) {
     S.arg = messages[5];
-	  sound_pub.publish(S);
+    sound_pub.publish(S);
     // Do something...
   } else {
     S.arg = messages[6];
-	  sound_pub.publish(S);
+    sound_pub.publish(S);
   }
+}
   
   //call nav_goal function on x,y,z positions
