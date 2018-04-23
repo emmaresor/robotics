@@ -33,12 +33,21 @@ int main(int argc, char** argv)
   ********************************************************************************************/
   
   YAML::Node config = YAML::LoadFile(argv[1]);
+<<<<<<< HEAD
   const YAML::Node& profs = config["Professors"];
   const YAML::Node& rooms = config["Rooms"];
   const YAML::Node& office = config["Office"];
   double officex = office[0].as<double>();
   double officey = office[1].as<double>();
   double officez = office[2].as<double>();
+=======
+  YAML::Node& profs = confg["Professors"];
+  YAML::Node& rooms = confg["Rooms"];
+  YAML::Node& office = confg["Office"];
+  double officex = office[0];
+  double officey = office[1];
+  double officez = office[2];
+>>>>>>> a81ce18356dcce64cb00b4f4dfc7e0839582701d
   
   /********************************************************************************************
               Prompt user to indicate room or professor, determine which YAML node to use
