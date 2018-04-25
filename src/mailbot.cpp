@@ -6,6 +6,7 @@
 #include "geometry_msgs/Pose.h"
 #include "geometry_msgs/PoseArray.h"
 
+#include <string>
 #include <yaml-cpp/yaml.h>
 #include <sound_play/sound_play.h>
 #include <sound_play/SoundRequest.h>
