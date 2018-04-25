@@ -16,10 +16,12 @@ using namespace std;
 
 int main(int argc, char** argv)
 {
+	ros::init(argc, argv, "mailbot");
+	ros::NodeHandle n;
+	
 	/********************************************************************************************
 	  Initialize sound publisher and enumerate messages
 	 ********************************************************************************************/
-
 	ros::Publisher sound_pub;
 	sound_play::SoundRequest S;
 	S.sound = -3; // =SAY
@@ -113,6 +115,79 @@ int main(int argc, char** argv)
 		S.arg = messages[6];
 		sound_pub.publish(S);
 	}
+
+	//travel TO mail delivery location based on x,y,z positions
+	ros::init(argc, argv, "move_base_client");
+	ros::NodeHandle n;
+	actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> ac("move_base",true);
+	ac.waitForServer();
+	move_base_msgs::MoveBaseGoal goal;
+
+	goal.target_pose.header.stamp = ros::Time::now();
+	goal.target_pose.header.frame_id = "/map";
+
+	double yaw = 0.0;
+	goal.target_pose.pose.position.x = xpos;
+	goal.target_pose.pose.position.y = ypoz;
+	goal.target_pose.pose.position.z = zpos;
+	goal.target_pose.pose.orientation = tf::createQuaternionMsgFromYaw(yaw);
+
+	ac.sendGoal(goal);
+    
+	ac.waitForResult();
+	
+	//Check if mail received
+	S.arg = messages[6];
+	sound_pub.publish(S);
+	
+	//wait for a sec
+	
+	S.arg = messages[7];
+	sound_pub.publish(S);
+	
+	//pocketsphynx to hear a "yes" or "no" response
+	ros::ServiceClient listenclient = n.serviceClient<std_srvs::Empty>("~start");
+	ros::ServiceClient stopclient = n.serviceClient<std_srvs::Empty>("~stop");
+	ros::Subscriber output_sub = n.subscribe("~output", 1, outputCB);
+	
+	double now = ros::Time::now().toSec();    
+    	double timer;
+    	bool stillwaiting = false;
+	
+	listenclient.call();
+    	while (!stillwaiting) {
+		ros::spin();
+		timer = ros::Time::now().toSec() - now;
+		if (timer >= 20 || //output == true) {
+	   		stillwaiting = false;
+			stopclient.call();
+			break;
+		}
+	}
+	
+	
+	//travel BACK to main office
+
+	//set the header
+	goal.target_pose.header.stamp = ros::Time::now();
+	goal.target_pose.header.frame_id = "/map";
+    
+	//set relative x, y, and angle
+	double yaw = 0.0;
+	goal.target_pose.pose.position.x = officex;
+	goal.target_pose.pose.position.y = officey;
+	goal.target_pose.pose.position.z = officez;
+	goal.target_pose.pose.orientation = tf::createQuaternionMsgFromYaw(yaw);
+
+	//send the goal
+	ac.sendGoal(goal);
+    
+	//block until the action is completed
+	ac.waitForResult();
+	
+	//Tell Megan the result of delivery
+	
+	return 0;
 }
 
-//call nav_goal function on x,y,z positions
+
