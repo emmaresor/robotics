@@ -19,9 +19,10 @@ using namespace std;
 string response;
 bool heard_data = false;
 
-void outputCB(const std_msgs::String::ConstPtr& s)
+void outputCB(const std_msgs::String& s)
 {
-	response = s->data;
+	response = s.data;
+	cerr << "response: " << response << endl;
 	heard_data = true;
 }
 
@@ -29,6 +30,7 @@ int main(int argc, char** argv)
 {
 	ros::init(argc, argv, "mailbot");
 	ros::NodeHandle n;
+	cerr << "in main" << endl;
 	
 	/********************************************************************************************
 	  Initialize sound publisher and enumerate messages
@@ -42,11 +44,12 @@ int main(int argc, char** argv)
 			      "I don't know where to go for the location you specified.", "Okay, I know where to go!",
 			      "I have mail for you!","Did you pick up your mail?", "I delivered the mail!", 
 			      "I didn't deliver the mail, sorry."};
-	
+
+	cerr << "message #1: " << messages[0] << endl;
 	/********************************************************************************************
 	  Initialize YAML nodes from loaded file of office locations
 	 ********************************************************************************************/
-
+	cerr << "File: " << argv[1] << endl;
 	YAML::Node config = YAML::LoadFile(argv[1]);
 	const YAML::Node& profs = config["Professors"];
 	const YAML::Node& rooms = config["Rooms"];
@@ -54,6 +57,10 @@ int main(int argc, char** argv)
 	double officex = office[0].as<double>();
 	double officey = office[1].as<double>();
 	double officez = office[2].as<double>();
+
+	cerr << "X coord: " << officex << endl;
+	cerr << "Y coord: " << officey << endl;
+	cerr << "X coord: " << officez << endl;
 
 	/********************************************************************************************
 	  Prompt user to indicate room or professor, determine which YAML node to use
@@ -122,6 +129,7 @@ int main(int argc, char** argv)
 		sound_pub.publish(S);
 	}
 
+/*
 	//travel TO mail delivery location based on x,y,z positions
 	actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> ac("move_base",true);
 	ac.waitForServer();
@@ -197,7 +205,7 @@ int main(int argc, char** argv)
 		S.arg = messages[9];
 		sound_pub.publish(S);	
 	}
-	
+*/
 	return 0;
 }
 

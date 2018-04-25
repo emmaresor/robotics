@@ -1,5 +1,5 @@
 #New format?
-Office: [x, y, z]
+Office: [10.00, 10.00, 10.00]
 
 Professors:
 - name: Strange
