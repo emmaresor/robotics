@@ -129,7 +129,6 @@ int main(int argc, char** argv)
 		sound_pub.publish(S);
 	}
 
-/*
 	//travel TO mail delivery location based on x,y,z positions
 	actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> ac("move_base",true);
 	ac.waitForServer();
@@ -147,7 +146,7 @@ int main(int argc, char** argv)
 	ac.sendGoal(goal);
     
 	ac.waitForResult();
-	
+/*	
 	//Check if mail received
 	S.arg = messages[6];
 	sound_pub.publish(S);
