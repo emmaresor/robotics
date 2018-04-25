@@ -178,7 +178,6 @@ int main(int argc, char** argv)
 	goal.target_pose.header.frame_id = "/map";
     
 	//set relative x, y, and angle
-	double yaw = 0.0;
 	goal.target_pose.pose.position.x = officex;
 	goal.target_pose.pose.position.y = officey;
 	goal.target_pose.pose.position.z = officez;
