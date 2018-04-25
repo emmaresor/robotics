@@ -45,11 +45,9 @@ int main(int argc, char** argv)
 			      "I have mail for you!","Did you pick up your mail?", "I delivered the mail!", 
 			      "I didn't deliver the mail, sorry."};
 
-	cerr << "message #1: " << messages[0] << endl;
 	/********************************************************************************************
 	  Initialize YAML nodes from loaded file of office locations
 	 ********************************************************************************************/
-	cerr << "File: " << argv[1] << endl;
 	YAML::Node config = YAML::LoadFile(argv[1]);
 	const YAML::Node& profs = config["Professors"];
 	const YAML::Node& rooms = config["Rooms"];
@@ -57,10 +55,6 @@ int main(int argc, char** argv)
 	double officex = office[0].as<double>();
 	double officey = office[1].as<double>();
 	double officez = office[2].as<double>();
-
-	cerr << "X coord: " << officex << endl;
-	cerr << "Y coord: " << officey << endl;
-	cerr << "X coord: " << officez << endl;
 
 	/********************************************************************************************
 	  Prompt user to indicate room or professor, determine which YAML node to use
