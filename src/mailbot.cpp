@@ -35,7 +35,7 @@ int main(int argc, char** argv)
 	/********************************************************************************************
 	  Initialize sound publisher and enumerate messages
 	 ********************************************************************************************/
-	ros::Publisher sound_pub;
+	ros::Publisher sound_pub = n.advertise<sound_play::SoundRequest>("/robotsound", 1);
 	sound_play::SoundRequest S;
 	S.sound = -3; // =SAY
 	S.command = 1; // =PLAY_ONCE
@@ -105,6 +105,9 @@ int main(int argc, char** argv)
 				xpos = destination["x"].as<double>();
 				ypos = destination["y"].as<double>();
 				zpos = destination["z"].as<double>();
+				cerr << "X: " << xpos << endl;
+				cerr << "Y: " << ypos << endl;
+				cerr << "Z: " << zpos << endl;
 				break;
 			}
 		}
@@ -115,6 +118,9 @@ int main(int argc, char** argv)
 				xpos = destination["x"].as<double>();
 				ypos = destination["y"].as<double>();
 				zpos = destination["z"].as<double>();
+				cerr << "X: " << xpos << endl;
+				cerr << "Y: " << ypos << endl;
+				cerr << "Z: " << zpos << endl;
 				break;
 			}
 		}
