@@ -14,6 +14,15 @@
 
 using namespace std;
 
+string response;
+bool heard_data = false;
+
+void outputCB(const std_msgs::String& s)
+{
+	response = s->data;
+	heard_data = true;
+}
+
 int main(int argc, char** argv)
 {
 	ros::init(argc, argv, "mailbot");
@@ -27,9 +36,11 @@ int main(int argc, char** argv)
 	S.sound = -3; // =SAY
 	S.command = 1; // =PLAY_ONCE
 	string messages[8] = {"Hi Megan! Are you delivering to a room or a professor?", "Oops! Incorrect input. Try again!",
-		"Please enter the room number.", "Please enter the professor's last name.", 
-		"I don't know where to go for the location you specified.", "Okay, I know where to go!",
-		"I have mail for you!","Did you pick up your mail?"};
+			      "Please enter the room number.", "Please enter the professor's last name.", 
+			      "I don't know where to go for the location you specified.", "Okay, I know where to go!",
+			      "I have mail for you!","Did you pick up your mail?", "I delivered the mail!", 
+			      "I didn't deliver the mail, sorry."};
+	
 	/********************************************************************************************
 	  Initialize YAML nodes from loaded file of office locations
 	 ********************************************************************************************/
@@ -158,13 +169,12 @@ int main(int argc, char** argv)
     	while (!stillwaiting) {
 		ros::spin();
 		timer = ros::Time::now().toSec() - now;
-		if (timer >= 20 || //output == true) {
+		if (timer >= 20 || heard_data) {
 	   		stillwaiting = false;
 			stopclient.call();
 			break;
 		}
 	}
-	
 	
 	//travel BACK to main office
 
@@ -186,6 +196,13 @@ int main(int argc, char** argv)
 	ac.waitForResult();
 	
 	//Tell Megan the result of delivery
+	if (heard_data) {
+		S.arg = messages[8];
+		sound_pub.publish(S);
+	} else {
+		S.arg = messages[9];
+		sound_pub.publish(S);	
+	}
 	
 	return 0;
 }
