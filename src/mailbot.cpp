@@ -17,7 +17,7 @@ using namespace std;
 string response;
 bool heard_data = false;
 
-void outputCB(const std_srvs::String& s)
+void outputCB(const std_msgs::String::ConstPtr& s)
 {
 	response = s->data;
 	heard_data = true;
