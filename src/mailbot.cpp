@@ -5,8 +5,9 @@
 #include <actionlib/server/simple_action_server.h>
 #include "geometry_msgs/Pose.h"
 #include "geometry_msgs/PoseArray.h"
+#include "std_msgs/String.h"
+#include "std_srvs/Empty.h"
 
-#include <string>
 #include <yaml-cpp/yaml.h>
 #include <sound_play/sound_play.h>
 #include <sound_play/SoundRequest.h>
@@ -36,7 +37,7 @@ int main(int argc, char** argv)
 	sound_play::SoundRequest S;
 	S.sound = -3; // =SAY
 	S.command = 1; // =PLAY_ONCE
-	string messages[8] = {"Hi Megan! Are you delivering to a room or a professor?", "Oops! Incorrect input. Try again!",
+	string messages[10] = {"Hi Megan! Are you delivering to a room or a professor?", "Oops! Incorrect input. Try again!",
 			      "Please enter the room number.", "Please enter the professor's last name.", 
 			      "I don't know where to go for the location you specified.", "Okay, I know where to go!",
 			      "I have mail for you!","Did you pick up your mail?", "I delivered the mail!", 
@@ -53,13 +54,6 @@ int main(int argc, char** argv)
 	double officex = office[0].as<double>();
 	double officey = office[1].as<double>();
 	double officez = office[2].as<double>();
-
-	YAML::Node& profs = confg["Professors"];
-	YAML::Node& rooms = confg["Rooms"];
-	YAML::Node& office = confg["Office"];
-	double officex = office[0];
-	double officey = office[1];
-	double officez = office[2];
 
 	/********************************************************************************************
 	  Prompt user to indicate room or professor, determine which YAML node to use
@@ -129,8 +123,6 @@ int main(int argc, char** argv)
 	}
 
 	//travel TO mail delivery location based on x,y,z positions
-	ros::init(argc, argv, "move_base_client");
-	ros::NodeHandle n;
 	actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> ac("move_base",true);
 	ac.waitForServer();
 	move_base_msgs::MoveBaseGoal goal;
@@ -140,7 +132,7 @@ int main(int argc, char** argv)
 
 	double yaw = 0.0;
 	goal.target_pose.pose.position.x = xpos;
-	goal.target_pose.pose.position.y = ypoz;
+	goal.target_pose.pose.position.y = ypos;
 	goal.target_pose.pose.position.z = zpos;
 	goal.target_pose.pose.orientation = tf::createQuaternionMsgFromYaw(yaw);
 
@@ -165,14 +157,16 @@ int main(int argc, char** argv)
 	double now = ros::Time::now().toSec();    
     	double timer;
     	bool stillwaiting = false;
-	
-	listenclient.call();
+
+	std_srvs::Empty srv;
+
+	listenclient.call(srv);
     	while (!stillwaiting) {
 		ros::spin();
 		timer = ros::Time::now().toSec() - now;
 		if (timer >= 20 || heard_data) {
 	   		stillwaiting = false;
-			stopclient.call();
+			stopclient.call(srv);
 			break;
 		}
 	}
