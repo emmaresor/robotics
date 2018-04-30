@@ -22,7 +22,7 @@ bool heard_data = false;
 void outputCB(const std_msgs::String& s)
 {
 	response = s.data;
-	//cerr << "response: " << response << endl;
+	cerr << "response: " << response << endl;
 	heard_data = true;
 }
 
@@ -30,38 +30,36 @@ int main(int argc, char** argv)
 {
 	ros::init(argc, argv, "mailbot");
 	ros::NodeHandle n;
+	cerr << "in main" << endl;
 	
 	/********************************************************************************************
-	  			Initialize sound publisher and enumerate messages
+	  Initialize sound publisher and enumerate messages
 	 ********************************************************************************************/
-	
 	ros::Publisher sound_pub = n.advertise<sound_play::SoundRequest>("/robotsound", 1);
 	sound_play::SoundRequest S;
 	S.sound = -3; // =SAY
 	S.command = 1; // =PLAY_ONCE
 	string messages[10] = {"Hi Megan! Are you delivering to a room or a professor?", "Oops! Incorrect input. Try again!",
 			      "Please enter the room number.", "Please enter the professor's last name.", 
-			      "I don't know where to go for the location you specified. Try again.", 
-			      "Okay, I know where to go!", "I have mail for you!","Did you pick up your mail?", 
-			      "I delivered the mail!", "I didn't deliver the mail, sorry."};
+			      "I don't know where to go for the location you specified.", "Okay, I know where to go!",
+			      "I have mail for you!","Did you pick up your mail?", "I delivered the mail!", 
+			      "I didn't deliver the mail, sorry."};
 
 	/********************************************************************************************
-	  		Initialize YAML nodes from loaded file of office locations
+	  Initialize YAML nodes from loaded file of office locations
 	 ********************************************************************************************/
-	
 	YAML::Node config = YAML::LoadFile(argv[1]);
-	//const YAML::Node& profs = config["Professors"];
-	//const YAML::Node& rooms = config["Rooms"];
+	const YAML::Node& profs = config["Professors"];
+	const YAML::Node& rooms = config["Rooms"];
 	const YAML::Node& office = config["Office"];
 	double officex = office[0].as<double>();
 	double officey = office[1].as<double>();
 	double officez = office[2].as<double>();
 
 	/********************************************************************************************
-	  	Prompt user to indicate room or professor, determine which YAML node to use
+	  Prompt user to indicate room or professor, determine which YAML node to use
 	 ********************************************************************************************/
-	
-	// "Hi Megan! Are you delivering to a room or a professor?"
+
 	S.arg = messages[1];
 	sound_pub.publish(S);
 
@@ -69,80 +67,69 @@ int main(int argc, char** argv)
 	cout << "Type R for room and P for professor: ";
 	cin >> location_type;
 	while (location_type != 'R' && location_type != 'P') {
-		// "Oops! Incorrect input. Try again!"
 		S.arg = messages[2];
 		sound_pub.publish(S);
 		cout << "Type R for room and P for professor: ";
 		cin >> location_type;
 	}
 
-	string location, key;
-	int nodesize;
-	const YAML::Node& node;
+	string location;
 	if (location_type == 'R') {
-		// "Please enter the room number."
 		S.arg = messages[3];
 		sound_pub.publish(S);
 		cout << "Room #: ";
 		cin >> location;
-		key = "rooms";
-		node = config["Rooms"];
-		nodesize = node.size();
 	} else {
-		// "Please enter the professor's last name."
 		S.arg = messages[4];
 		sound_pub.publish(S);
 		cout << "Professor's last name: ";
 		cin >> location;
-		key = "name";
-		node = config["Professors"];
-		nodesize = node.size();
 	}
 
 	/********************************************************************************************
-	  				    Get x,y,z positions
+	  Get x,y,z positions
 	 ********************************************************************************************/
 
 	double xpos = -1.0;
 	double ypos, zpos;
-	bool validlocation = false;
-	while (!validlocation) {
-		for (size_t i = 0; i < nodesize; i++) {
-			const YAML::Node& destination = node[i];
-			if (destination[key].as<string>() == location) {
+	if (location_type == 'R') {
+		for (size_t i = 0; i < rooms.size(); i++) {
+			const YAML::Node& destination = rooms[i];
+			if (destination["room"].as<string>() == location) {
 				xpos = destination["x"].as<double>();
 				ypos = destination["y"].as<double>();
 				zpos = destination["z"].as<double>();
-				
+				cerr << "X: " << xpos << endl;
+				cerr << "Y: " << ypos << endl;
+				cerr << "Z: " << zpos << endl;
 				break;
 			}
-		
 		}
-		if (xpos == -1.0) {
-			// "I don't know where to go for the location you specified. Try again."
-			S.arg = messages[5];
-			sound_pub.publish(S);
-			if (location_type == 'R')
-				cout << "Room #: ";
-				cin >> location;
-			} else {
-				cout << "Professor's last name: ";
-				cin >> location;
+	} else {
+		for (size_t i = 0; i < profs.size(); i++) {
+			const YAML::Node& destination = profs[i];
+			if (destination["name"].as<string>() == location) {
+				xpos = destination["x"].as<double>();
+				ypos = destination["y"].as<double>();
+				zpos = destination["z"].as<double>();
+				cerr << "X: " << xpos << endl;
+				cerr << "Y: " << ypos << endl;
+				cerr << "Z: " << zpos << endl;
+				break;
 			}
-		} else {
-			validlocation = true;
 		}
 	}
+	// Check if name not found
+	if (xpos == -1.0) {
+		S.arg = messages[5];
+		sound_pub.publish(S);
+		// Do something...
+	} else {
+		S.arg = messages[6];
+		sound_pub.publish(S);
+	}
 
-<<<<<<< HEAD
-	/********************************************************************************************
-	  		Travel to mail delivery location based on x,y,z positions
-	 ********************************************************************************************/
-	
-=======
-/*
 	//travel TO mail delivery location based on x,y,z positions
->>>>>>> parent of c819f07... testing first nav goal
 	actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> ac("move_base",true);
 	ac.waitForServer();
 	move_base_msgs::MoveBaseGoal goal;
@@ -159,22 +146,13 @@ int main(int argc, char** argv)
 	ac.sendGoal(goal);
     
 	ac.waitForResult();
-	
-<<<<<<< HEAD
-	/********************************************************************************************
-	  				   Check if mail received
-	 ********************************************************************************************/
 /*	
-	// "I have mail for you!"
-=======
 	//Check if mail received
->>>>>>> parent of c819f07... testing first nav goal
 	S.arg = messages[6];
 	sound_pub.publish(S);
 	
-	ros::Duration(5).sleep(); //Sleep for five seconds
+	//wait for a sec
 	
-	//"Did you pick up your mail?"
 	S.arg = messages[7];
 	sound_pub.publish(S);
 	
@@ -193,29 +171,29 @@ int main(int argc, char** argv)
     	while (!stillwaiting) {
 		ros::spin();
 		timer = ros::Time::now().toSec() - now;
-		if (timer >= 10 || heard_data) {
+		if (timer >= 20 || heard_data) {
 	   		stillwaiting = false;
 			stopclient.call(srv);
 			break;
 		}
 	}
+	
+	//travel BACK to main office
 
-	//Will response == "yes"/"Yes"/"YES" ("no"/"No"/"NO") ???
-*/	
-	/********************************************************************************************
-	  				Travel back to main office
-	 ********************************************************************************************/
-/*
+	//set the header
 	goal.target_pose.header.stamp = ros::Time::now();
 	goal.target_pose.header.frame_id = "/map";
     
+	//set relative x, y, and angle
 	goal.target_pose.pose.position.x = officex;
 	goal.target_pose.pose.position.y = officey;
 	goal.target_pose.pose.position.z = officez;
 	goal.target_pose.pose.orientation = tf::createQuaternionMsgFromYaw(yaw);
 
+	//send the goal
 	ac.sendGoal(goal);
     
+	//block until the action is completed
 	ac.waitForResult();
 	
 	//Tell Megan the result of delivery
