@@ -57,9 +57,11 @@ int main(int argc, char** argv)
 	const YAML::Node& profs = config["Professors"];
 	const YAML::Node& rooms = config["Rooms"];
 	const YAML::Node& office = config["Office"];
-	double officex = 0.00109428019657; //office[0].as<double>();
-	double officey = -0.122332275215; //office[1].as<double>();
-	double officez = 0.0; //office[2].as<double>();
+	double officex = office[0].as<double>();
+	double officey = office[1].as<double>();
+	double officez = office[2].as<double>();
+	cerr << "office: " << endl;
+	cerr << officex << ", " << officey << ", " << officez << endl;
 
 	/********************************************************************************************
 	 	pocketsphinx to get yes/no response regarding having mail to deliver.
