@@ -134,10 +134,15 @@ int main(int argc, char** argv)
 		}
 	}
 
+<<<<<<< HEAD
 	/********************************************************************************************
 	  		Travel to mail delivery location based on x,y,z positions
 	 ********************************************************************************************/
 	
+=======
+/*
+	//travel TO mail delivery location based on x,y,z positions
+>>>>>>> parent of c819f07... testing first nav goal
 	actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> ac("move_base",true);
 	ac.waitForServer();
 	move_base_msgs::MoveBaseGoal goal;
@@ -155,11 +160,15 @@ int main(int argc, char** argv)
     
 	ac.waitForResult();
 	
+<<<<<<< HEAD
 	/********************************************************************************************
 	  				   Check if mail received
 	 ********************************************************************************************/
 /*	
 	// "I have mail for you!"
+=======
+	//Check if mail received
+>>>>>>> parent of c819f07... testing first nav goal
 	S.arg = messages[6];
 	sound_pub.publish(S);
 	
