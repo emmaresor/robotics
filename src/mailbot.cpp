@@ -50,6 +50,8 @@ int main(int argc, char** argv)
 			      "I have mail for you!","Did you pick up your mail?", "I delivered the mail!", 
 			      "I didn't deliver the mail, sorry.", "Do you have more mail?"};
 
+	cerr << "made array of responses" << endl;
+
 	/********************************************************************************************
 	  Initialize YAML nodes from loaded file of office locations
 	 ********************************************************************************************/
@@ -57,6 +59,7 @@ int main(int argc, char** argv)
 	const YAML::Node& profs = config["Professors"];
 	const YAML::Node& rooms = config["Rooms"];
 	const YAML::Node& office = config["Office"];
+	cerr << "getting office coords" << endl;
 	double officex = office[0].as<double>();
 	double officey = office[1].as<double>();
 	double officez = office[2].as<double>();
