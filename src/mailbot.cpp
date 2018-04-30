@@ -92,7 +92,7 @@ int main(int argc, char** argv)
 	//if no, exit program 
 	//if yes, enter while loop and prompt for room/prof. set bool to yes/true
 	bool yes;
-	if (/*response == "yes" && heard_data*/)
+	if (/*response == "yes" &&*/ heard_data)
 		yes = true;
 	else
 		return 0;
@@ -139,7 +139,7 @@ int main(int argc, char** argv)
 		/********************************************************************************************
 		  Get x,y,z positions
 		 ********************************************************************************************/
-		double deliveries[delivery_num].x_coord = -1.0;
+		deliveries[delivery_num].x_coord = -1.0;
 		if (location_type == 'R') {
 			for (size_t i = 0; i < rooms.size(); i++) {
 				const YAML::Node& destination = rooms[i];
@@ -192,7 +192,7 @@ int main(int argc, char** argv)
 				break;
 			}
 		}
-		if (/*response == "no" && heard_data*/)
+		if (/*response == "no" &&*/ heard_data)
 			yes = false;
 		
 	}
@@ -241,9 +241,9 @@ int main(int argc, char** argv)
 				break;
 			}
 		}
-*\
+*/
 	}
-\*
+/*
 	//travel BACK to main office
 
 	//set the header
