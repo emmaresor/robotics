@@ -86,8 +86,8 @@ int main(int argc, char** argv)
 		cout << "Room #: ";
 		cin >> location;
 		key = "rooms";
-		nodesize = rooms.size();
 		node = config["Rooms"];
+		nodesize = node.size();
 	} else {
 		// "Please enter the professor's last name."
 		S.arg = messages[4];
@@ -95,8 +95,8 @@ int main(int argc, char** argv)
 		cout << "Professor's last name: ";
 		cin >> location;
 		key = "name";
-		nodesize = profs.size();
 		node = config["Professors"];
+		nodesize = node.size();
 	}
 
 	/********************************************************************************************
