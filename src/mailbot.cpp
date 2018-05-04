@@ -106,10 +106,10 @@ int main(int argc, char** argv)
 	string response;
 	cin >> response;
 	cout << "reponse: " << response << endl;
-	if (response == "yes" /* && heard_data*/)
+	if (response == "yes" /* && heard_data*/){
 		yes = true;
 		cout << "yes = true" << endl;
-	else
+	}else
 		return 0;
 	
 	
