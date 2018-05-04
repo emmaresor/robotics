@@ -40,7 +40,6 @@ int main(int argc, char** argv)
 {
 	ros::init(argc, argv, "mailbot");
 	ros::NodeHandle n;
-	cerr << "in main" << endl;
 	
 	/********************************************************************************************
 	  Initialize sound publisher and enumerate messages
@@ -54,7 +53,6 @@ int main(int argc, char** argv)
 			      "I have mail for you!","Did you pick up your mail?", "I delivered the mail!", 
 			      "I didn't deliver the mail, sorry.", "Do you have more mail?"};
 
-	cerr << "made array of responses" << endl;
 
 	/********************************************************************************************
 	  Initialize YAML nodes from loaded file of office locations
@@ -63,12 +61,9 @@ int main(int argc, char** argv)
 	const YAML::Node& profs = config["Professors"];
 	const YAML::Node& rooms = config["Rooms"];
 	const YAML::Node& office = config["Office"];
-	cerr << "getting office coords" << endl;
 	double officex = office[0].as<double>();
 	double officey = office[1].as<double>();
 	double officez = office[2].as<double>();
-	cerr << "office: " << endl;
-	cerr << officex << ", " << officey << ", " << officez << endl;
 
 	/********************************************************************************************
 	 	pocketsphinx to get yes/no response regarding having mail to deliver.
@@ -105,10 +100,8 @@ int main(int argc, char** argv)
 	bool yes;
 	string response;
 	cin >> response;
-	cout << "reponse: " << response << endl;
 	if (response == "yes" /* && heard_data*/){
 		yes = true;
-		cout << "yes = true" << endl;
 	}else
 		return 0;
 	
@@ -183,7 +176,7 @@ int main(int argc, char** argv)
 			S.say(messages[5]);
 			sleepok(1, n);
 		} else {
-			cout << "Okay, I know where to go!" << endl;
+			//"Okay, I know where to go!"
 			S.say(messages[6]);
 			sleepok(1, n);
 		}
