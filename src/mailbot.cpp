@@ -30,6 +30,11 @@ void outputCB(const std_msgs::String& s)
 	//what does it convert the response to exactly??
 	heard_data = true;
 }
+void sleepok(int t, ros::NodeHandle& n)
+{
+	if (n.ok())
+		sleep(t);
+}
 
 int main(int argc, char** argv)
 {
@@ -41,9 +46,12 @@ int main(int argc, char** argv)
 	  Initialize sound publisher and enumerate messages
 	 ********************************************************************************************/
 	ros::Publisher sound_pub = n.advertise<sound_play::SoundRequest>("/robotsound", 1);
-	sound_play::SoundRequest S;
-	S.sound = -3; // =SAY
-	S.command = 1; // =PLAY_ONCE
+	//sound_play::SoundRequest S;
+	//S.sound = -3; // =SAY
+	//S.command = 1; // =PLAY_ONCE
+	sound_play::SoundClient S;
+	//S.playWaveFromPkg("sound_play", "sounds/sounds.ogg);
+	sleepok(1, n);
 	string messages[12] = {"Hi Megan! Do you have mail to deliver?", "Are you delivering to a room or a professor?", "Oops! Incorrect input. Try again!",
 			      "Please enter the room number.", "Please enter the professor's last name.", 
 			      "I don't know where to go for the location you specified.", "Okay, I know where to go!",
@@ -70,9 +78,11 @@ int main(int argc, char** argv)
 	 	pocketsphinx to get yes/no response regarding having mail to deliver.
 	 ********************************************************************************************/
 	//"Hi Megan! Do you have mail to deliver?"
-	S.arg = messages[0];
-	sound_pub.publish(S);
-	
+	//S.arg = messages[0];
+	//sound_pub.publish(S);
+	S.say(messages[0]);
+	sleepok(1, n);
+			  
 	//pocketsphynx to hear a "yes" or "no" response
 	ros::ServiceClient listenclient = n.serviceClient<std_srvs::Empty>("/recognizer/start");
 	ros::ServiceClient stopclient = n.serviceClient<std_srvs::Empty>("/recognizer/stop");
