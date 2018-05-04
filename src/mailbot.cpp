@@ -174,11 +174,11 @@ int main(int argc, char** argv)
 		if (deliveries[delivery_num].x_coord == -1.0) {
 			//"I don't know where to go for the location you specified."
 			S.say(messages[5]);
-			pause(4, n);
+			pause(1, n);
 		} else {
 			//"Okay, I know where to go!"
 			S.say(messages[6]);
-			pause(4, n);
+			pause(1, n);
 		}
 		//"Do you have more mail?"
 		S.say(messages[11]);
@@ -225,13 +225,13 @@ int main(int argc, char** argv)
 
 		// "I have mail for you!"
 		S.say(messages[7]);
-		pause(8, n);
+		pause(1, n);
 
 		//wait for a sec
 
 		//"Did you pick up your mail?"
 		S.say(messages[8]);
-		pause(2, n);
+		pause(1, n);
 		bool heard_data;
 		string response;
 		cin >> response;
