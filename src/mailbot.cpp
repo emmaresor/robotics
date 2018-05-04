@@ -46,11 +46,7 @@ int main(int argc, char** argv)
 	  Initialize sound publisher and enumerate messages
 	 ********************************************************************************************/
 	ros::Publisher sound_pub = n.advertise<sound_play::SoundRequest>("/robotsound", 1);
-	//sound_play::SoundRequest S;
-	//S.sound = -3; // =SAY
-	//S.command = 1; // =PLAY_ONCE
 	sound_play::SoundClient S;
-	//S.playWaveFromPkg("sound_play", "sounds/sounds.ogg);
 	sleepok(1, n);
 	string messages[12] = {"Hi Megan! Do you have mail to deliver?", "Are you delivering to a room or a professor?", "Oops! Incorrect input. Try again!",
 			      "Please enter the room number.", "Please enter the professor's last name.", 
@@ -78,8 +74,6 @@ int main(int argc, char** argv)
 	 	pocketsphinx to get yes/no response regarding having mail to deliver.
 	 ********************************************************************************************/
 	//"Hi Megan! Do you have mail to deliver?"
-	//S.arg = messages[0];
-	//sound_pub.publish(S);
 	S.say(messages[0]);
 	sleepok(1, n);
 			  
@@ -120,18 +114,17 @@ int main(int argc, char** argv)
 	int delivery_num = 0;
 	
 	while (yes){
-		
 		//"Are you delivering to a room or a professor?"
-		//S.arg = messages[1];
-		//sound_pub.publish(S);
+		S.say(messages[1]);
+		sleepok(1, n);
 
 		char location_type;
 		cout << "Type R for room and P for professor: ";
 		cin >> location_type;
 		while (location_type != 'R' && location_type != 'P') {
 			//"Oops! Incorrect input. Try again!",
-			//S.arg = messages[2];
-			//sound_pub.publish(S);
+			S.say(messages[2]);
+			sleepok(1, n);
 			cout << "Type R for room and P for professor: ";
 			cin >> location_type;
 		}
@@ -139,14 +132,14 @@ int main(int argc, char** argv)
 		string location;
 		if (location_type == 'R') {
 			//"Please enter the room number."
-			//S.arg = messages[3];
-			//sound_pub.publish(S);
+			S.say(messages[3]);
+			sleepok(1, n);
 			cout << "Room #: ";
 			cin >> location;
 		} else {
 			//"Please enter the professor's last name."
-			//S.arg = messages[4];
-			//sound_pub.publish(S);
+			S.say(messages[4]);
+			sleepok(1, n);
 			cout << "Professor's last name: ";
 			cin >> location;
 		}
@@ -181,18 +174,16 @@ int main(int argc, char** argv)
 		// Check if name not found
 		if (deliveries[delivery_num].x_coord == -1.0) {
 			//"I don't know where to go for the location you specified."
-			//S.arg = messages[5];
-			//sound_pub.publish(S);
-
+			S.say(messages[5]);
+			sleepok(1, n);
 		} else {
 			cout << "Okay, I know where to go!" << endl;
-			//S.arg = messages[6];
-			//sound_pub.publish(S);
-			
+			S.say(messages[6]);
+			sleepok(1, n);
 		}
 		//"Do you have more mail?"
-		//S.arg = messages[11];
-		//sound_pub.publish(S);
+		S.say(messages[11]);
+		sleepok(1, n);
 		
 		now = ros::Time::now().toSec();    
     		stillwaiting = false;
@@ -233,14 +224,14 @@ int main(int argc, char** argv)
 		//Check if mail received
 
 		// "I have mail for you!"
-		S.arg = messages[7];
-		sound_pub.publish(S);
+		S.say(messages[7]);
+		sleepok(1, n);
 
 		//wait for a sec
 
 		//"Did you pick up your mail?"
-		S.arg = messages[8];
-		sound_pub.publish(S);
+		S.say(messages[8]);
+		sleepok(1, n);
 
 		//pocketsphynx to hear a "yes" or "no" response
 		now = ros::Time::now().toSec();    
@@ -280,12 +271,12 @@ int main(int argc, char** argv)
 	//Tell Megan the result of delivery
 	if (heard_data) {
 		//"I delivered the mail."
-		S.arg = messages[9];
-		sound_pub.publish(S);
+		S.say(messages[9]);
+		sleepok(1, n);
 	} else {
 		//"I didn't deliver the mail!"
-		S.arg = messages[10];
-		sound_pub.publish(S);	
+		S.say(messages[10]);
+		sleepok(1, n);	
 	}
 */
 	return 0;
