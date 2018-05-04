@@ -76,7 +76,7 @@ int main(int argc, char** argv)
 	//pocketsphynx to hear a "yes" or "no" response
 	ros::ServiceClient listenclient = n.serviceClient<std_srvs::Empty>("/recognizer/start");
 	ros::ServiceClient stopclient = n.serviceClient<std_srvs::Empty>("/recognizer/stop");
-	ros::Subscriber output_sub = n.subscribe("~output", 1, outputCB);
+	ros::Subscriber output_sub = n.subscribe("/recognizer/output", 1, outputCB);
 	
 	double now = ros::Time::now().toSec();    
     	double timer;
