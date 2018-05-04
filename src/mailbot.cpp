@@ -30,7 +30,7 @@ void outputCB(const std_msgs::String& s)
 	//what does it convert the response to exactly??
 	heard_data = true;
 }
-void sleepok(int t, ros::NodeHandle& n)
+void pause(int t, ros::NodeHandle& n)
 {
 	if (n.ok())
 		sleep(t);
@@ -46,7 +46,7 @@ int main(int argc, char** argv)
 	 ********************************************************************************************/
 	ros::Publisher sound_pub = n.advertise<sound_play::SoundRequest>("/robotsound", 1);
 	sound_play::SoundClient S;
-	sleepok(1, n);
+	pause(1, n);
 	string messages[12] = {"Hi Megan! Do you have mail to deliver?", "Are you delivering to a room or a professor?", "Oops! Incorrect input. Try again!",
 			      "Please enter the room number.", "Please enter the professor's last name.", 
 			      "I don't know where to go for the location you specified.", "Okay, I know where to go!",
@@ -70,7 +70,7 @@ int main(int argc, char** argv)
 	 ********************************************************************************************/
 	//"Hi Megan! Do you have mail to deliver?"
 	S.say(messages[0]);
-	sleepok(1, n);
+	pause(1, n);
 	
 	/*
 	//pocketsphynx to hear a "yes" or "no" response
@@ -115,7 +115,7 @@ int main(int argc, char** argv)
 	while (yes){
 		//"Are you delivering to a room or a professor?"
 		S.say(messages[1]);
-		sleepok(1, n);
+		pause(1, n);
 
 		char location_type;
 		cout << "Type R for room and P for professor: ";
@@ -123,7 +123,7 @@ int main(int argc, char** argv)
 		while (location_type != 'R' && location_type != 'P') {
 			//"Oops! Incorrect input. Try again!",
 			S.say(messages[2]);
-			sleepok(1, n);
+			pause(1, n);
 			cout << "Type R for room and P for professor: ";
 			cin >> location_type;
 		}
@@ -132,13 +132,13 @@ int main(int argc, char** argv)
 		if (location_type == 'R') {
 			//"Please enter the room number."
 			S.say(messages[3]);
-			sleepok(1, n);
+			pause(1, n);
 			cout << "Room #: ";
 			cin >> location;
 		} else {
 			//"Please enter the professor's last name."
 			S.say(messages[4]);
-			sleepok(1, n);
+			pause(1, n);
 			cout << "Professor's last name: ";
 			cin >> location;
 		}
@@ -174,15 +174,15 @@ int main(int argc, char** argv)
 		if (deliveries[delivery_num].x_coord == -1.0) {
 			//"I don't know where to go for the location you specified."
 			S.say(messages[5]);
-			sleepok(1, n);
+			pause(4, n);
 		} else {
 			//"Okay, I know where to go!"
 			S.say(messages[6]);
-			sleepok(1, n);
+			pause(4, n);
 		}
 		//"Do you have more mail?"
 		S.say(messages[11]);
-		sleepok(1, n);
+		pause(1, n);
 		/*
 		now = ros::Time::now().toSec();    
     		stillwaiting = false;
@@ -220,19 +220,27 @@ int main(int argc, char** argv)
 		ac.sendGoal(goal);
     
 		ac.waitForResult();
-/*	
+	
 		//Check if mail received
 
 		// "I have mail for you!"
 		S.say(messages[7]);
-		sleepok(1, n);
+		pause(8, n);
 
 		//wait for a sec
 
 		//"Did you pick up your mail?"
 		S.say(messages[8]);
-		sleepok(1, n);
-
+		pause(2, n);
+		bool heard_data;
+		string response;
+		cin >> response;
+		if (response == "yes")
+		{	
+			heard_data = true;
+		}
+			
+/*
 		//pocketsphynx to hear a "yes" or "no" response
 		now = ros::Time::now().toSec();    
 		stillwaiting = false;
@@ -249,7 +257,7 @@ int main(int argc, char** argv)
 		}
 */
 	}
-/*
+
 	//travel BACK to main office
 
 	//set the header
@@ -257,8 +265,8 @@ int main(int argc, char** argv)
 	goal.target_pose.header.frame_id = "/map";
     
 	//set relative x, y, and angle
-	goal.target_pose.pose.position.x = officex;
-	goal.target_pose.pose.position.y = officey;
+	goal.target_pose.pose.position.x = 18.0929; //officex; temporarily using closer location (sheldon's office)
+	goal.target_pose.pose.position.y = 14.4788; //officey;
 	goal.target_pose.pose.position.z = officez;
 	goal.target_pose.pose.orientation = tf::createQuaternionMsgFromYaw(yaw);
 
@@ -272,13 +280,13 @@ int main(int argc, char** argv)
 	if (heard_data) {
 		//"I delivered the mail."
 		S.say(messages[9]);
-		sleepok(1, n);
+		pause(1, n);
 	} else {
 		//"I didn't deliver the mail!"
 		S.say(messages[10]);
-		sleepok(1, n);	
+		pause(1, n);	
 	}
-*/
+
 	return 0;
 }
 
