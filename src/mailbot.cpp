@@ -101,7 +101,9 @@ int main(int argc, char** argv)
 	//if no, exit program 
 	//if yes, enter while loop and prompt for room/prof. set bool to yes/true
 	bool yes;
-	if (/*response == "yes" &&*/ heard_data)
+	string response;
+	cin >> response;
+	if (response == "yes" /* && heard_data*/)
 		yes = true;
 	else
 		return 0;
