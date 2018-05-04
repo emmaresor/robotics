@@ -190,7 +190,7 @@ int main(int argc, char** argv)
 		//"Do you have more mail?"
 		S.say(messages[11]);
 		sleepok(1, n);
-		
+		/*
 		now = ros::Time::now().toSec();    
     		stillwaiting = false;
 		
@@ -204,9 +204,10 @@ int main(int argc, char** argv)
 				break;
 			}
 		}
-		if (/*response == "no" &&*/ heard_data)
+		*/
+		cin >> response;
+		if (response == "no" /*&& heard_data*/)
 			yes = false;
-		
 	}
 	//travel TO mail delivery location based on x,y,z positions
 	actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> ac("move_base",true);
