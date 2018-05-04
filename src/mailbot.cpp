@@ -122,16 +122,16 @@ int main(int argc, char** argv)
 	while (yes){
 		
 		//"Are you delivering to a room or a professor?"
-		S.arg = messages[1];
-		sound_pub.publish(S);
+		//S.arg = messages[1];
+		//sound_pub.publish(S);
 
 		char location_type;
 		cout << "Type R for room and P for professor: ";
 		cin >> location_type;
 		while (location_type != 'R' && location_type != 'P') {
 			//"Oops! Incorrect input. Try again!",
-			S.arg = messages[2];
-			sound_pub.publish(S);
+			//S.arg = messages[2];
+			//sound_pub.publish(S);
 			cout << "Type R for room and P for professor: ";
 			cin >> location_type;
 		}
@@ -139,14 +139,14 @@ int main(int argc, char** argv)
 		string location;
 		if (location_type == 'R') {
 			//"Please enter the room number."
-			S.arg = messages[3];
-			sound_pub.publish(S);
+			//S.arg = messages[3];
+			//sound_pub.publish(S);
 			cout << "Room #: ";
 			cin >> location;
 		} else {
 			//"Please enter the professor's last name."
-			S.arg = messages[4];
-			sound_pub.publish(S);
+			//S.arg = messages[4];
+			//sound_pub.publish(S);
 			cout << "Professor's last name: ";
 			cin >> location;
 		}
@@ -181,18 +181,18 @@ int main(int argc, char** argv)
 		// Check if name not found
 		if (deliveries[delivery_num].x_coord == -1.0) {
 			//"I don't know where to go for the location you specified."
-			S.arg = messages[5];
-			sound_pub.publish(S);
+			//S.arg = messages[5];
+			//sound_pub.publish(S);
 
 		} else {
-			//"Okay, I know where to go!"
-			S.arg = messages[6];
-			sound_pub.publish(S);
+			cout << "Okay, I know where to go!" << endl;
+			//S.arg = messages[6];
+			//sound_pub.publish(S);
 			
 		}
 		//"Do you have more mail?"
-		S.arg = messages[11];
-		sound_pub.publish(S);
+		//S.arg = messages[11];
+		//sound_pub.publish(S);
 		
 		now = ros::Time::now().toSec();    
     		stillwaiting = false;
