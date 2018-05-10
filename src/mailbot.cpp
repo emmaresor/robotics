@@ -218,13 +218,13 @@ int main(int argc, char** argv)
 
 	double yaw = 0.0;
 	bool delivered = true;
-	cerr << delivery_num << endl;
 	for (int i = 0; i < delivery_num; i++){
+		cerr << "current delivery: " << delivery_num << endl;
 		goal.target_pose.pose.position.x = deliveries[i].x_coord;
 		goal.target_pose.pose.position.y = deliveries[i].y_coord;
 		goal.target_pose.pose.position.z = deliveries[i].z_coord;
 		goal.target_pose.pose.orientation = tf::createQuaternionMsgFromYaw(yaw);
-
+		cerr << "Delivering to: " << deliveries[i].x_coord << ", " << deliveries[i].y_coord << endl;
 		ac.sendGoal(goal);
     
 		ac.waitForResult();
@@ -232,6 +232,7 @@ int main(int argc, char** argv)
 		//Check if mail received
 		if (delivery_num != i-1)
 		{
+			cerr << "Delivery location" << endl;
 			// "I have mail for you!"
 			S.say(messages[7]);
 			pause(3, n);
@@ -250,6 +251,7 @@ int main(int argc, char** argv)
 				delivered &= false;
 			}
 		}else{
+			cerr << "Office" << endl;
 			if (delivered) {
 				//"I delivered the mail."
 				S.say(messages[9]);
