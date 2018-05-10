@@ -1,10 +1,12 @@
 <launch>
 
   <node name="recognizer" pkg="pocketsphinx" type="recognizer.py">
-    <param name="lm" value="../voice_cmd.lm"/>
-    <param name="dict" value="../voice_cmd.dic"/>
+    <param name="lm" value="/home/turtlebot/catkin_ws/src/mailbot/voice_cmd.lm"/>
+    <param name="dict" value="/home/turtlebot/catkin_ws/src/mailbot/voice_cmd.dic"/>
   </node>
 
   <node name="voice_cmd_vel" pkg="pocketsphinx" type="voice_cmd_vel.py" output="screen"/>
+    <remap from="cmd_vel" to="/home/turtlebot/catkin_ws/src/mailbot"/>
+  </node>
 
 </launch>
