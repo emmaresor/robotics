@@ -100,9 +100,9 @@ int main(int argc, char** argv)
 	bool yes;
 	string response;
 	cin >> response;
-	if (response == "yes" /* && heard_data*/){
+	if (response == "yes" /*&& heard_data*/){
 		yes = true;
-	}else
+	} else
 		return 0;
 	
 	
@@ -174,7 +174,7 @@ int main(int argc, char** argv)
 		if (deliveries[delivery_num].x_coord == -1.0) {
 			//"I don't know where to go for the location you specified."
 			S.say(messages[5]);
-			pause(1, n);
+			pause(3, n);
 		} else {
 			//"Okay, I know where to go!"
 			S.say(messages[6]);
@@ -202,6 +202,7 @@ int main(int argc, char** argv)
 		if (response == "no" /*&& heard_data*/)
 			yes = false;
 	}
+	
 	//travel TO mail delivery location based on x,y,z positions
 	actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> ac("move_base",true);
 	ac.waitForServer();
@@ -211,6 +212,8 @@ int main(int argc, char** argv)
 	goal.target_pose.header.frame_id = "/map";
 
 	double yaw = 0.0;
+	bool delivered = true;
+	cerr << delivery_num << endl;
 	for (int i = 0; i < delivery_num; i++){
 		goal.target_pose.pose.position.x = deliveries[i].x_coord;
 		goal.target_pose.pose.position.y = deliveries[i].y_coord;
@@ -225,7 +228,7 @@ int main(int argc, char** argv)
 
 		// "I have mail for you!"
 		S.say(messages[7]);
-		pause(1, n);
+		pause(3, n);
 
 		//wait for a sec
 
@@ -237,7 +240,9 @@ int main(int argc, char** argv)
 		cin >> response;
 		if (response == "yes")
 		{	
-			heard_data = true;
+			delivered &= true;
+		} else {
+			delivered &= false;
 		}
 			
 /*
@@ -260,13 +265,9 @@ int main(int argc, char** argv)
 
 	//travel BACK to main office
 
-	//set the header
-	goal.target_pose.header.stamp = ros::Time::now();
-	goal.target_pose.header.frame_id = "/map";
-    
 	//set relative x, y, and angle
-	goal.target_pose.pose.position.x = 18.0929; //officex; temporarily using closer location (sheldon's office)
-	goal.target_pose.pose.position.y = 14.4788; //officey;
+	goal.target_pose.pose.position.x = officex;
+	goal.target_pose.pose.position.y = officey; 
 	goal.target_pose.pose.position.z = officez;
 	goal.target_pose.pose.orientation = tf::createQuaternionMsgFromYaw(yaw);
 
@@ -277,7 +278,7 @@ int main(int argc, char** argv)
 	ac.waitForResult();
 	
 	//Tell Megan the result of delivery
-	if (heard_data) {
+	if (delivered) {
 		//"I delivered the mail."
 		S.say(messages[9]);
 		pause(1, n);
