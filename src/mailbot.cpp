@@ -51,7 +51,7 @@ int main(int argc, char** argv)
 			      "Please enter the room number.", "Please enter the professor's last name.", 
 			      "I don't know where to go for the location you specified.", "Okay, I know where to go!",
 			      "I have mail for you!","Did you pick up your mail?", "I delivered the mail!", 
-			      "I didn't deliver the mail, sorry.", "Do you have more mail?"};
+			      "I was not able to deliver the mail, sorry.", "Do you have more mail?"};
 
 
 	/********************************************************************************************
@@ -178,7 +178,7 @@ int main(int argc, char** argv)
 		} else {
 			//"Okay, I know where to go!"
 			S.say(messages[6]);
-			pause(1, n);
+			pause(3, n);
 		}
 		//"Do you have more mail?"
 		S.say(messages[11]);
@@ -282,9 +282,9 @@ int main(int argc, char** argv)
 		S.say(messages[9]);
 		pause(1, n);
 	} else {
-		//"I didn't deliver the mail!"
+		//"I was not able to deliver the mail!"
 		S.say(messages[10]);
-		pause(1, n);	
+		pause(1, n);
 	}
 
 	return 0;
