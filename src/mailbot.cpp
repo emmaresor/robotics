@@ -202,6 +202,11 @@ int main(int argc, char** argv)
 		if (response == "no" /*&& heard_data*/)
 			yes = false;
 	}
+	//Add final stop as main office
+	deliveries[delivery_num].x_coord = officex;
+	deliveries[delivery_num].y_coord = officey;
+	deliveries[delivery_num].z_coord = officez;
+	delivery_num++;
 	
 	//travel TO mail delivery location based on x,y,z positions
 	actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> ac("move_base",true);
@@ -225,24 +230,35 @@ int main(int argc, char** argv)
 		ac.waitForResult();
 	
 		//Check if mail received
+		if (delivery_num != i-1)
+		{
+			// "I have mail for you!"
+			S.say(messages[7]);
+			pause(3, n);
+			//wait for a sec
 
-		// "I have mail for you!"
-		S.say(messages[7]);
-		pause(3, n);
-
-		//wait for a sec
-
-		//"Did you pick up your mail?"
-		S.say(messages[8]);
-		pause(1, n);
-		bool heard_data;
-		string response;
-		cin >> response;
-		if (response == "yes")
-		{	
-			delivered &= true;
-		} else {
-			delivered &= false;
+			//"Did you pick up your mail?"
+			S.say(messages[8]);
+			pause(1, n);
+			bool heard_data;
+			string response;
+			cin >> response;
+			if (response == "yes")
+			{	
+				delivered &= true;
+			} else {
+				delivered &= false;
+			}
+		}else{
+			if (delivered) {
+				//"I delivered the mail."
+				S.say(messages[9]);
+				pause(1, n);
+			} else {
+				//"I was not able to deliver the mail!"
+				S.say(messages[10]);
+				pause(1, n);
+			}
 		}
 			
 /*
@@ -264,7 +280,7 @@ int main(int argc, char** argv)
 	}
 
 	//travel BACK to main office
-
+	/*
 	//set relative x, y, and angle
 	goal.target_pose.pose.position.x = officex;
 	goal.target_pose.pose.position.y = officey; 
@@ -287,6 +303,7 @@ int main(int argc, char** argv)
 		S.say(messages[10]);
 		pause(1, n);
 	}
+	*/
 
 	return 0;
 }
