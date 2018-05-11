@@ -71,6 +71,7 @@ int main(int argc, char** argv)
 	//"Hi Megan! Do you have mail to deliver?"
 	S.say(messages[0]);
 	pause(1, n);
+	cout << "Y/N: ";
 	
 	/*	
 	//pocketsphynx to hear a "yes" or "no" response
@@ -100,7 +101,7 @@ int main(int argc, char** argv)
 	bool yes;
 	string response;
 	cin >> response;
-	if (response == "yes" /*&& heard_data*/){
+	if (response == "Y" /*&& heard_data*/){
 		yes = true;
 	} else
 		return 0;
@@ -183,6 +184,7 @@ int main(int argc, char** argv)
 		//"Do you have more mail?"
 		S.say(messages[11]);
 		pause(1, n);
+		cout << "Y/N: ";
 		/*
 		now = ros::Time::now().toSec();    
     		stillwaiting = false;
@@ -199,7 +201,7 @@ int main(int argc, char** argv)
 		}
 		*/
 		cin >> response;
-		if (response == "no" /*&& heard_data*/)
+		if (response != "Y" /*&& heard_data*/)
 			yes = false;
 	}
 	//Add final stop as main office
@@ -224,15 +226,14 @@ int main(int argc, char** argv)
 		goal.target_pose.pose.position.y = deliveries[i].y_coord;
 		goal.target_pose.pose.position.z = deliveries[i].z_coord;
 		goal.target_pose.pose.orientation = tf::createQuaternionMsgFromYaw(yaw);
-		cerr << "Delivering to: " << deliveries[i].x_coord << ", " << deliveries[i].y_coord << endl;
+		//cerr << "Delivering to: " << deliveries[i].x_coord << ", " << deliveries[i].y_coord << endl;
 		ac.sendGoal(goal);
     
 		ac.waitForResult();
 	
 		//Check if mail received
-		if (delivery_num != i-1)
+		if (delivery_num != i+1)
 		{
-			cerr << "Delivery location" << endl;
 			// "I have mail for you!"
 			S.say(messages[7]);
 			pause(3, n);
@@ -250,7 +251,7 @@ int main(int argc, char** argv)
 			} else {
 				delivered &= false;
 			}
-		}else{
+		} else{
 			cerr << "Office" << endl;
 			if (delivered) {
 				//"I delivered the mail."
@@ -294,7 +295,7 @@ int main(int argc, char** argv)
     
 	//block until the action is completed
 	ac.waitForResult();
-	
+	*/
 	//Tell Megan the result of delivery
 	if (delivered) {
 		//"I delivered the mail."
@@ -305,7 +306,6 @@ int main(int argc, char** argv)
 		S.say(messages[10]);
 		pause(1, n);
 	}
-	*/
 
 	return 0;
 }
