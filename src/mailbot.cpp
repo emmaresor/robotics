@@ -27,7 +27,6 @@ void outputCB(const std_msgs::String& s)
 {
 	response = s.data;
 	cerr << "response: " << response << endl;
-	//what does it convert the response to exactly??
 	heard_data = true;
 }
 void pause(int t, ros::NodeHandle& n)
@@ -47,8 +46,9 @@ int main(int argc, char** argv)
 	ros::Publisher sound_pub = n.advertise<sound_play::SoundRequest>("/robotsound", 1);
 	sound_play::SoundClient S;
 	pause(1, n);
-	string messages[12] = {"Hi Megan! Do you have mail to deliver?", "Are you delivering to a room or a professor?", "Oops! Incorrect input. Try again!",
-			      "Please enter the room number.", "Please enter the professor's last name.", 
+	string messages[12] = {"Hi Megan! Do you have mail to deliver?", "Are you delivering to a room or a professor?", 
+			       "Oops! Incorrect input. Try again!", "Please enter the room number.", 
+			       "Please enter the professor's last name.", 
 			      "I don't know where to go for the location you specified.", "Okay, I know where to go!",
 			      "I have mail for you!","Did you pick up your mail?", "I delivered the mail!", 
 			      "I was not able to deliver the mail, sorry.", "Do you have more mail?"};
@@ -71,6 +71,7 @@ int main(int argc, char** argv)
 	//"Hi Megan! Do you have mail to deliver?"
 	S.say(messages[0]);
 	pause(1, n);
+	//Substitute for pocketsphinx
 	cout << "Y/N: ";
 	
 	/*	
@@ -96,8 +97,8 @@ int main(int argc, char** argv)
 		}
 	}
 	*/
-	//if no, exit program 
-	//if yes, enter while loop and prompt for room/prof. set bool to yes/true
+	
+	//If no, exit program. If yes, enter while loop and prompt for room/prof. set bool to yes/true
 	bool yes;
 	string response;
 	cin >> response;
@@ -105,7 +106,6 @@ int main(int argc, char** argv)
 		yes = true;
 	} else
 		return 0;
-	
 	
 	/********************************************************************************************
 		  Prompt user to indicate room or professor, determine which YAML node to use
@@ -144,9 +144,9 @@ int main(int argc, char** argv)
 			cin >> location;
 		}
 
-		/********************************************************************************************
-		  Get x,y,z positions
-		 ********************************************************************************************/
+	/********************************************************************************************
+		  			Get x,y,z positions
+	********************************************************************************************/
 		deliveries[delivery_num].x_coord = -1.0;
 		if (location_type == 'R') {
 			for (size_t i = 0; i < rooms.size(); i++) {
@@ -184,7 +184,9 @@ int main(int argc, char** argv)
 		//"Do you have more mail?"
 		S.say(messages[11]);
 		pause(1, n);
+		// Substitute for pocketsphinx 
 		cout << "Y/N: ";
+		
 		/*
 		now = ros::Time::now().toSec();    
     		stillwaiting = false;
@@ -200,17 +202,21 @@ int main(int argc, char** argv)
 			}
 		}
 		*/
+		
 		cin >> response;
 		if (response != "Y" /*&& heard_data*/)
 			yes = false;
 	}
+	
 	//Add final stop as main office
 	deliveries[delivery_num].x_coord = officex;
 	deliveries[delivery_num].y_coord = officey;
 	deliveries[delivery_num].z_coord = officez;
 	delivery_num++;
 	
-	//travel TO mail delivery location based on x,y,z positions
+	/********************************************************************************************
+					  Travel to mail locations
+	********************************************************************************************/
 	actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> ac("move_base",true);
 	ac.waitForServer();
 	move_base_msgs::MoveBaseGoal goal;
@@ -221,12 +227,11 @@ int main(int argc, char** argv)
 	double yaw = 0.0;
 	bool delivered = true;
 	for (int i = 0; i < delivery_num; i++){
-		cerr << "current delivery: " << delivery_num << endl;
 		goal.target_pose.pose.position.x = deliveries[i].x_coord;
 		goal.target_pose.pose.position.y = deliveries[i].y_coord;
 		goal.target_pose.pose.position.z = deliveries[i].z_coord;
 		goal.target_pose.pose.orientation = tf::createQuaternionMsgFromYaw(yaw);
-		//cerr << "Delivering to: " << deliveries[i].x_coord << ", " << deliveries[i].y_coord << endl;
+
 		ac.sendGoal(goal);
     
 		ac.waitForResult();
@@ -243,9 +248,10 @@ int main(int argc, char** argv)
 			S.say(messages[8]);
 			pause(1, n);
 			cout << "Y/N: ";
-			bool heard_data;
+			
 			string response;
 			cin >> response;
+			
 			if (response == "Y")
 			{	
 				delivered &= true;
@@ -265,7 +271,7 @@ int main(int argc, char** argv)
 			}
 		}
 			
-/*
+		/*
 		//pocketsphynx to hear a "yes" or "no" response
 		now = ros::Time::now().toSec();    
 		stillwaiting = false;
@@ -280,23 +286,13 @@ int main(int argc, char** argv)
 				break;
 			}
 		}
-*/
+		*/
 	}
 
-	//travel BACK to main office
-	/*
-	//set relative x, y, and angle
-	goal.target_pose.pose.position.x = officex;
-	goal.target_pose.pose.position.y = officey; 
-	goal.target_pose.pose.position.z = officez;
-	goal.target_pose.pose.orientation = tf::createQuaternionMsgFromYaw(yaw);
-
-	//send the goal
-	ac.sendGoal(goal);
-    
-	//block until the action is completed
-	ac.waitForResult();
-	*/
+	/********************************************************************************************
+		  			Communicate if mail is delivered
+	********************************************************************************************/
+	
 	//Tell Megan the result of delivery
 	if (delivered) {
 		//"I delivered the mail."
