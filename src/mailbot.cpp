@@ -72,7 +72,7 @@ int main(int argc, char** argv)
 	S.say(messages[0]);
 	pause(1, n);
 	
-	
+	/*	
 	//pocketsphynx to hear a "yes" or "no" response
 	ros::ServiceClient listenclient = n.serviceClient<std_srvs::Empty>("/recognizer/start");
 	ros::ServiceClient stopclient = n.serviceClient<std_srvs::Empty>("/recognizer/stop");
@@ -94,13 +94,13 @@ int main(int argc, char** argv)
 			break;
 		}
 	}
-	
+	*/
 	//if no, exit program 
 	//if yes, enter while loop and prompt for room/prof. set bool to yes/true
 	bool yes;
-	//string response;
-	//cin >> response;
-	if (response == "yes" && heard_data){
+	string response;
+	cin >> response;
+	if (response == "yes" /*&& heard_data*/){
 		yes = true;
 	} else
 		return 0;
