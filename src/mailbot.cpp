@@ -242,17 +242,18 @@ int main(int argc, char** argv)
 			//"Did you pick up your mail?"
 			S.say(messages[8]);
 			pause(1, n);
+			cout << "Y/N: ";
 			bool heard_data;
 			string response;
 			cin >> response;
-			if (response == "yes")
+			if (response == "Y")
 			{	
 				delivered &= true;
 			} else {
 				delivered &= false;
 			}
-		} else{
-			cerr << "Office" << endl;
+		} else {
+			//cerr << "Office" << endl;
 			if (delivered) {
 				//"I delivered the mail."
 				S.say(messages[9]);
